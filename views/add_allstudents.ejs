@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <!-- -------------------- Meta & Title -------------------- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>add_all_users</title>
+
+  <!-- -------------------- CSS & Icon -------------------- -->
+  <link rel="stylesheet" href="style-addallclub.css"> <!-- ใช้ไฟล์ CSS เดียวกับ allclub -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <!-- -------------------- Header -------------------- -->
+    <div class="header">
+      <div class="header-btn">
+        <a href="/admin_students">
+          <button class="btn btn-success ms-1">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </a>
+      </div>
+      <div class="header-txt">
+        <h1>👩‍🎓 นำเข้าข้อมูลผู้ใช้</h1>
+      </div>
+    </div>
+
+    <!-- -------------------- Sub Header -------------------- -->
+    <div class="sub_header" style="text-align: center;">
+      <p>อัพโหลดไฟล์ CSV เพื่อเพิ่มผู้ใช้ทั้งหมด</p>
+    </div>
+
+    <!-- -------------------- Instructions -------------------- -->
+    <div class="instructions">
+      <h3>📋 รูปแบบไฟล์ CSV ที่ถูกต้อง:</h3>
+      <ul>
+        <li style="font-size: 18px;"><strong>ชื่อผู้ใช้</strong> - name_users</li>
+        <li style="font-size: 18px;"><strong>อีเมล (xxxxx@svk.ac.th)</strong> - email</li>
+        <li style="font-size: 18px;"><strong>รหัสผ่าน (xx/xx/xxxx)</strong> - password</li>
+        <li style="font-size: 18px;"><strong>ห้องเรียน (x0x)</strong> - classroom</li>
+        <li style="font-size: 18px;"><strong>เลขที่ (xx)</strong> - number</li>
+      </ul>
+      <a href="/admin_user/download-template">
+        <button class="btn btn-primary">ดาวน์โหลด CSV Template</button>
+      </a>
+    </div>
+
+    <!-- -------------------- Upload Form -------------------- -->
+    <form action="/admin_user/import" method="POST" enctype="multipart/form-data" class="upload-form">
+      <div class="file-input-wrapper">
+        <input type="file" name="csvfile" accept=".csv" required class="file-input" id="csvfile">
+        <label for="csvfile" class="file-input-label" id="fileLabel">
+          <span class="upload-icon">📁</span>
+          <span class="file-text">เลือกไฟล์ CSV</span>
+        </label>
+        <div class="file-info" id="fileInfo">รองรับเฉพาะไฟล์ .csv</div>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn" disabled>
+        📤 นำเข้าข้อมูล
+      </button>
+    </form>
+
+    <!-- -------------------- Message Alert -------------------- -->
+    <% if (typeof message !=='undefined' && message) { %>
+      <div
+        class="message <%= message.includes('สำเร็จ') ? 'success' : message.includes('ผิดพลาด') || message.includes('ไม่') ? 'error' : 'info' %>">
+        <%= message %>
+      </div>
+      <% } %>
+  </div>
+
+  <!-- -------------------- Script: File Upload & Drag Drop -------------------- -->
+  <script>
+    // จัดการ input file และ label
+    const fileInput = document.getElementById('csvfile');
+    const fileLabel = document.getElementById('fileLabel');
+    const fileInfo = document.getElementById('fileInfo');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // เมื่อเลือกไฟล์
+    fileInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        fileLabel.classList.add('has-file');
+        fileLabel.innerHTML = `
+          <span class="upload-icon">✅</span>
+          <span class="file-text">${file.name}</span>
+        `;
+        fileInfo.textContent = `ขนาดไฟล์: ${(file.size / 1024).toFixed(1)} KB`;
+        submitBtn.disabled = false;
+      } else {
+        fileLabel.classList.remove('has-file');
+        fileLabel.innerHTML = `
+          <span class="upload-icon">📁</span>
+          <span class="file-text">เลือกไฟล์ CSV</span>
+        `;
+        fileInfo.textContent = 'รองรับเฉพาะไฟล์ .csv';
+        submitBtn.disabled = true;
+      }
+    });
+
+    // เพิ่ม loading state เมื่อส่งฟอร์ม
+    document.querySelector('.upload-form').addEventListener('submit', function () {
+      submitBtn.innerHTML = '⏳ กำลังอัพโหลด...';
+      submitBtn.disabled = true;
+    });
+
+    // Drag & Drop functionality
+    let dragCounter = 0;
+    fileLabel.addEventListener('dragenter', function (e) {
+      e.preventDefault();
+      dragCounter++;
+      this.style.borderColor = '#764ba2';
+      this.style.transform = 'scale(1.02)';
+    });
+    fileLabel.addEventListener('dragleave', function (e) {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter === 0) {
+        this.style.borderColor = '#667eea';
+        this.style.transform = 'scale(1)';
+      }
+    });
+    fileLabel.addEventListener('dragover', function (e) {
+      e.preventDefault();
+    });
+    fileLabel.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dragCounter = 0;
+      this.style.borderColor = '#667eea';
+      this.style.transform = 'scale(1)';
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  </script>
+</body>
+
+</html>

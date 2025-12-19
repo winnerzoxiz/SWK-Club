@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <!-- -------------------- Meta & Title -------------------- -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %> | Svk</title>
+
+    <!-- -------------------- Preload & CSS -------------------- -->
+    <link rel="preload" href="/style.css" as="style" />
+    <link rel="preload" href="/assets/swk-logo.jpg" as="image" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- -------------------- JS Libraries -------------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+</head>
+
+<body>
+    <!-- -------------------- Header -------------------- -->
+    <header class="navbar navbar-expand-md border-bottom">
+        <div class="container-fluid px-5">
+            <!-- Logo โรงเรียน -->
+            <a href="/user" class="navbar-brand d-flex align-items-center">
+                <img src="/assets/swk-logo.jpg" alt="Svk Logo" class="img-nav" width="40" height="40" />
+            </a>
+            <!-- Navigation Links -->
+            <nav class="navbar-nav d-none d-md-flex flex-row mx-auto">
+                <a href="/user" class="nav-link px-4 link-primary fw-bold"><h5 class="mb-0">Home</h5></a>
+                <a href="#profile" class="nav-link px-4 link-dark"><h5 class="mb-0">Profile</h5></a>
+                <a href="#about" class="nav-link px-4 link-dark"><h5 class="mb-0">About</h5></a>
+            </nav>
+            <!-- User Info & Logout -->
+            <div class="d-flex align-items-center">
+                <% if (user) { %>
+                    <span class="me-3 px-4 d-none d-md-inline">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <%= user.name_users %>
+                    </span>
+                    <form action="/logout" method="POST" class="d-inline">
+                        <button type="submit" class="btn-logout">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- -------------------- Main Content -------------------- -->
+    <main class="container my-4">
+        <!-- Title & Toggle แสดง/ซ่อนรายชื่อชุมนุม -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 mb-0">รายชื่อชุมนุม</h1>
+                <small class="text-muted">จำนวนชุมนุม: <%= clubs.length %> รายการ</small>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="contentToggle" <%=contentToggleDefault ? 'checked' : '' %> />
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- -------------------- Alert Message -------------------- -->
+        <% 
+        // กำหนดประเภท alert จากข้อความ
+        if (message) { 
+            const alertConfig = {
+                'สำเร็จ': { class: 'success', icon: 'check-circle' },
+                'ซ้ำ': { class: 'warning', icon: 'exclamation-triangle' },
+                'ผิดพลาด': { class: 'danger', icon: 'times-circle' },
+                'เต็ม': { class: 'danger', icon: 'times-circle' }
+            };
+            let alertType = 'info';
+            let alertIcon = 'info-circle';
+            for (const [key, config] of Object.entries(alertConfig)) {
+                if (message.includes(key)) {
+                    alertType = config.class;
+                    alertIcon = config.icon;
+                    break;
+                }
+            }
+        %>
+        <div class="alert alert-<%= alertType %> alert-dismissible fade show">
+            <i class="fas fa-<%= alertIcon %> me-2"></i>
+            <%= message %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+        <!-- -------------------- Club List Section -------------------- -->
+        <div id="show_close">
+            <!-- Filter & Search Form -->
+            <section class="mb-4">
+                <form method="get" action="/user" class="d-flex flex-wrap align-items-end gap-3">
+                    <!-- Filter by Category -->
+                    <div class="flex-grow-1">
+                        <label for="category-select" class="form-label">เลือกกลุ่มสาระการเรียนรู้</label>
+                        <select id="category-select" name="category" class="form-select" onchange="this.form.submit()">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="วิทยาศาสตร์" <%=selectedCategory==='วิทยาศาสตร์' ? 'selected' : '' %>>วิทยาศาสตร์</option>
+                            <option value="เทคโนโลยี" <%=selectedCategory==='เทคโนโลยี' ? 'selected' : '' %>>เทคโนโลยี</option>
+                            <option value="คณิตศาสตร์" <%=selectedCategory==='คณิตศาสตร์' ? 'selected' : '' %>>คณิตศาสตร์</option>
+                            <option value="ภาษาไทย" <%=selectedCategory==='ภาษาไทย' ? 'selected' : '' %>>ภาษาไทย</option>
+                            <option value="แนะแนว" <%=selectedCategory==='แนะแนว' ? 'selected' : '' %>>แนะแนว</option>
+                            <option value="สังคมศึกษาศาสนาและวัฒนธรรม" <%=selectedCategory==='สังคมศึกษาศาสนาและวัฒนธรรม' ? 'selected' : '' %>>สังคมศึกษา ศาสนา และวัฒนธรรม</option>
+                            <option value="สุขศึกษาและพลศึกษา" <%=selectedCategory==='สุขศึกษาและพลศึกษา' ? 'selected' : '' %>>สุขศึกษาและพลศึกษา</option>
+                            <option value="ภาษาต่างประเทศ" <%=selectedCategory==='ภาษาต่างประเทศ' ? 'selected' : '' %>>ภาษาต่างประเทศ</option>
+                            <option value="ภาษาต่างประเทศที่ 2" <%=selectedCategory==='ภาษาต่างประเทศที่ 2' ? 'selected' : '' %>>ภาษาต่างประเทศที่ 2</option>
+                            <option value="ศิลปะ" <%=selectedCategory==='ศิลปะ' ? 'selected' : '' %>>ศิลปะ</option>
+                            <option value="การงานอาชีพ" <%=selectedCategory==='การงานอาชีพ' ? 'selected' : '' %>>การงานอาชีพ</option>
+                            <option value="แนะแนวและทั่วไป" <%=selectedCategory==='แนะแนวและทั่วไป' ? 'selected' : '' %>>แนะแนวและทั่วไป</option>
+                        </select>
+                    </div>
+                    <!-- Search by Club Name -->
+                    <div class="flex-grow-1">
+                        <label for="search-bar" class="form-label">ค้นหาชุมนุม</label>
+                        <div class="d-flex gap-1">
+                            <input type="text" id="search-bar" name="search" class="form-control"
+                                value="<%= search || '' %>" placeholder="พิมพ์ชื่อชุมนุม...">
+                            <button type="submit" class="btn btn-primary ms-2">ค้นหา</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Club Cards -->
+            <section>
+                <div class="row">
+                    <% if (clubs.length === 0) { %>
+                        <!-- No clubs found -->
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                <i class="fas fa-info-circle me-2"></i>ไม่พบชุมนุม
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <% clubs.forEach((club, index) => {
+                            const currentCount = club.currentCount || 0;
+                            const isFull = currentCount >= club.maximum_users;
+                            const isRegistered = registeredClubs.includes(club.name);
+                            const progressPercentage = (currentCount / club.maximum_users) * 100;
+                        %>
+                        <div class="col-md-4 mb-4">
+                            <article class="card shadow-sm h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Club Info -->
+                                    <h3 class="card-title h5"><%= club.name %></h3>
+                                    <p><strong>กลุ่มสาระ:</strong> <%= club.category %></p>
+                                    <p><strong>ครูผู้สอน:</strong> <%= club.name_teachers %></p>
+                                    <p><strong>ห้อง:</strong> <%= club.Room %></p>
+                                    <p><strong>เงื่อนไขการรับ:</strong> <%= club.conditions %></p>
+                                    <!-- Registration Progress -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="small text-muted">จำนวนผู้ลงทะเบียน</span>
+                                            <span class="small"><%= currentCount %> / <%= club.maximum_users %></span>
+                                        </div>
+                                        <div class="progress" style="height:8px;">
+                                            <div class="progress-bar <%= isFull ? 'bg-danger' : 'bg-success' %>"
+                                                style="width:<%= progressPercentage %>%"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Register Button -->
+                                    <div class="mt-auto">
+                                        <% if (isRegistered) { %>
+                                            <button class="btn btn-success w-100" disabled>
+                                                <i class="fas fa-check me-2"></i>ลงทะเบียนแล้ว
+                                            </button>
+                                        <% } else { %>
+                                            <form class="register-form" action="/register-club" method="POST">
+                                                <input type="hidden" name="club_name" value="<%= club.name %>" />
+                                                <button type="submit"
+                                                    class="btn <%= isFull ? 'btn-secondary' : 'btn-primary' %> w-100"
+                                                    <%= isFull ? 'disabled' : '' %>>
+                                                    <i class="fas fa-<%= isFull ? 'times' : 'plus' %> me-2"></i>
+                                                    <%= isFull ? 'เต็มแล้ว' : 'ลงทะเบียน' %>
+                                                </button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- -------------------- Profile Section -------------------- -->
+    <section id="profile" class="container my-5">
+        <h2 class="text-center mb-4">ข้อมูลผู้ใช้</h2>
+        <div class="card shadow border-0">
+            <div class="card-body">
+                <h3><i class="fas fa-user-circle text-primary me-2"></i> <%= user.name_users %></h3>
+                <p><i class="fas fa-envelope me-2"></i> <%= user.email %></p>
+                <p>
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    <% if (registeredClubs.length > 0) { %>
+                        คุณลงทะเบียนชุมนุม:
+                        <% registeredClubs.forEach(club => { %>
+                            <strong class="text-success"><%= club.name %></strong><br>
+                            <i class="bi bi-building"></i> ห้อง: <%= club.Room %><br>
+                            <i class="bi bi-person-bounding-box"></i> ครู: <%= club.name_teachers %><br>
+                        <% }) %>
+                    <% } else { %>
+                        <span class="text-warning">ยังไม่ได้ลงทะเบียนชุมนุม</span>
+                    <% } %>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- -------------------- About Section -------------------- -->
+    <section id="about" class="container my-5">
+        <div class="card shadow border-0">
+            <div class="card-body">
+                <h2><i class="fas fa-users text-primary me-2"></i>About Us</h2>
+                <p>เว็บไซต์ลงทะเบียนชุมนุมของโรงเรียนสันป่าตองวิทยาคม</p>
+                <p><strong>Our Mission:</strong> แพลตฟอร์มที่ใช้งานง่ายสำหรับนักเรียนในการลงทะเบียนชุมนุม</p>
+                <p><strong>Our Owner:</strong> นางสาวณฐกฤษกา มงคล</p>
+                <p><i class="fas fa-map-marker-alt me-2"></i>ติดต่ออาคาร 92 ปี ห้องพักครูคอมพิวเตอร์</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- -------------------- Footer -------------------- -->
+    <footer class="py-4 mt-5 text-center text-muted">
+        &copy; 2025 โรงเรียนสันป่าตองวิทยาคม. All rights reserved.<br>
+        Developed by Apiwat Buanaitham.
+    </footer>
+
+    <!-- -------------------- JS Scripts -------------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // -------------------- SweetAlert2 Confirm Registration --------------------
+            document.querySelectorAll('.register-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const clubName = form.querySelector('input[name="club_name"]').value;
+                    Swal.fire({
+                        title: "ยืนยันการลงทะเบียนชุมนุม",
+                        text: `คุณต้องการลงทะเบียน "${clubName}" หรือไม่?`,
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#22bb33",
+                        cancelButtonColor: "#bb2124",
+                        confirmButtonText: "ยืนยัน",
+                        cancelButtonText: "ยกเลิก"
+                    }).then((result) => { if (result.isConfirmed) form.submit(); });
+                });
+            });
+
+            // -------------------- Toggle Club List Visibility --------------------
+            const mainContent = document.getElementById('show_close');
+            const contentToggle = document.getElementById('contentToggle');
+            if (mainContent && contentToggle) {
+                let savedState = localStorage.getItem('contentToggleChecked');
+                contentToggle.checked = savedState === null ? contentToggle.checked : savedState === 'true';
+                function toggle() {
+                    mainContent.style.display = contentToggle.checked ? 'block' : 'none';
+                    localStorage.setItem('contentToggleChecked', contentToggle.checked);
+                }
+                contentToggle.addEventListener('change', toggle);
+                toggle();
+            }
+        });
+    </script>
+</body>
+</html>

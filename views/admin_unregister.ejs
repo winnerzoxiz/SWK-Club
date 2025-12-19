@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <!-- -------------------- Meta & Title -------------------- -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - ห้องที่ยังไม่ได้ลงทะเบียน</title>
+
+    <!-- -------------------- CSS & Icon -------------------- -->
+    <link rel="stylesheet" href="/style-unregister&detail.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="dashboard-container p-4">
+        <!-- -------------------- Header -------------------- -->
+        <div class="main-header d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <!-- ปุ่มย้อนกลับไปหน้า Admin หลัก -->
+                <a href="/admin">
+                  <button class="btn btn-success ms-1"><i class="bi bi-arrow-left"></i></button>
+                </a>
+            </div>
+            <h1 class="header_title fw-bold m-0 mx-auto text-center" style="color: black;">ห้องที่ยังลงทะเบียนไม่ครบ</h1>
+        </div>
+
+        <!-- -------------------- Cards: ห้องที่ยังไม่ได้ลงทะเบียนครบ -------------------- -->
+        <div class="cards-wrapper">
+          <% unregisteredByRoom.forEach(room => { %>
+            <div class="card" style="background: lightgray;">
+              <h5>ห้อง <%= room.classroom %></h5>
+              <b>
+                <p class="text_people"><%= room.unregistered_count %> คนยังไม่ได้ลงทะเบียน</p>
+              </b>
+              <!-- ปุ่มดูรายละเอียดนักเรียนที่ยังไม่ได้ลงทะเบียนในห้องนั้น -->
+              <a href="/admin_unregisterdetail/<%= room.classroom %>" class="btn btn-sm btn-secondary">ดูรายละเอียด</a>
+            </div>
+          <% }) %>
+        </div>
+  </div>
+</body>
+</html>

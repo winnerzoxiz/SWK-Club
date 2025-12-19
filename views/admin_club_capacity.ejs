@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <!-- -------------------- Meta & Title -------------------- -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - ชุมนุมที่ยังว่าง</title>
+
+  <!-- -------------------- CSS & Icon -------------------- -->
+  <link rel="stylesheet" href="/style-capacity.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="dashboard-container p-4">
+    <!-- -------------------- Header -------------------- -->
+    <div class="main-header d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <a href="/admin">
+          <button class="btn btn-success ms-1"><i class="bi bi-arrow-left"></i></button>
+        </a>
+      </div>
+      <h1 class="header_title fw-bold m-0 mx-auto text-center" style="color: black;">ชุมนุมที่ยังมีที่ว่าง</h1>
+    </div>
+
+    <!-- -------------------- Filter Section -------------------- -->
+    <section class="mb-4" aria-labelledby="filter-title">
+      <h2 id="filter-title" class="visually-hidden">Filter Clubs by Category</h2>
+      <form method="get" action="/admin_club_capacity" class="row g-3">
+        <div class="col-md-6">
+          <div class="header_select">
+            <label for="category-select" class="form-label" style="color: white;">เลือกกลุ่มสาระการเรียนรู้</label>
+          </div>
+          <select id="category-select" name="category" class="form-select" onchange="this.form.submit()">
+            <option value="">-- ทั้งหมด --</option>
+                            <option value="วิทยาศาสตร์" <%=selectedCategory==='วิทยาศาสตร์' ? 'selected' : '' %>>วิทยาศาสตร์</option>
+                            <option value="เทคโนโลยี" <%=selectedCategory==='เทคโนโลยี' ? 'selected' : '' %>>เทคโนโลยี</option>
+                            <option value="คณิตศาสตร์" <%=selectedCategory==='คณิตศาสตร์' ? 'selected' : '' %>>คณิตศาสตร์</option>
+                            <option value="ภาษาไทย" <%=selectedCategory==='ภาษาไทย' ? 'selected' : '' %>>ภาษาไทย</option>
+                            <option value="แนะแนว" <%=selectedCategory==='แนะแนว' ? 'selected' : '' %>>แนะแนว</option>
+                            <option value="สังคมศึกษาศาสนาและวัฒนธรรม" <%=selectedCategory==='สังคมศึกษาศาสนาและวัฒนธรรม' ? 'selected' : '' %>>สังคมศึกษา ศาสนา และวัฒนธรรม</option>
+                            <option value="สุขศึกษาและพลศึกษา" <%=selectedCategory==='สุขศึกษาและพลศึกษา' ? 'selected' : '' %>>สุขศึกษาและพลศึกษา</option>
+                            <option value="ภาษาต่างประเทศ" <%=selectedCategory==='ภาษาต่างประเทศ' ? 'selected' : '' %>>ภาษาต่างประเทศ</option>
+                            <option value="ภาษาต่างประเทศที่ 2" <%=selectedCategory==='ภาษาต่างประเทศที่ 2' ? 'selected' : '' %>>ภาษาต่างประเทศที่ 2</option>
+                            <option value="ศิลปะ" <%=selectedCategory==='ศิลปะ' ? 'selected' : '' %>>ศิลปะ</option>
+                            <option value="การงานอาชีพ" <%=selectedCategory==='การงานอาชีพ' ? 'selected' : '' %>>การงานอาชีพ</option>
+                            <option value="แนะแนวและทั่วไป" <%=selectedCategory==='แนะแนวและทั่วไป' ? 'selected' : '' %>>แนะแนวและทั่วไป</option>
+          </select>
+        </div>
+      </form>
+    </section>
+
+    <!-- -------------------- Club Cards -------------------- -->
+    <div class="cards-wrapper">
+      <% clubs.forEach(club=> { %>
+        <div class="card p-3 mb-2" style="background: lightgray;">
+          <h5 style="color: navy;"><%= club.club_name %></h5>
+          <p style="color: navy;">กลุ่มสาระ : <b><%= club.category %></b></p>
+          <b>
+            <p style="color: navy;">ว่างเหลือ: <%= club.remaining_slots %> คน</p>
+          </b>
+          <a href="/admin_clubmembers/<%= encodeURIComponent(club.club_name) %>">
+            <button class="btn btn-secondary">ดูรายชื่อสมาชิก</button>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</body>
+
+</html>

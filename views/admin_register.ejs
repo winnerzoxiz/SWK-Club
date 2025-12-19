@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <!-- -------------------- Meta & Title -------------------- -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - รายชื่อนักเรียนที่ลงทะเบียนแล้ว</title>
+
+    <!-- -------------------- CSS & Icon -------------------- -->
+    <link rel="stylesheet" href="/style-admindetail.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="main p-3">
+        <!-- -------------------- Header -------------------- -->
+        <div class="main-header d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <!-- ปุ่มย้อนกลับไปหน้า Admin หลัก -->
+                <a href="/admin">
+                    <button class="btn btn-success ms-1"><i class="bi bi-arrow-left"></i></button>
+                </a>
+            </div>
+            <h1 class="header_title fw-bold m-0">นักเรียนที่ลงทะเบียนแล้ว</h1>
+            <div class="main-btn d-flex gap-2 align-items-center">
+                <form method="GET" action="/admin_register" class="d-flex gap-2 justify-content-center align-items-center">
+                    <input type="text" id="search-bar" name="search" class="form-control" value="<%= search || '' %>"
+                        placeholder="พิมพ์ชื่อนักเรียนหรือชุมนุม...">
+                    <button type="submit" class="btn btn-primary">ค้นหา</button>
+                </form>
+                <a href="/add_register" class="btn btn-primary">+ เพิ่มนักเรียนเข้าชุมนุม</a>
+                <button class="btn btn-danger btn-deleteall-register">- ลบทั้งหมด</button>
+                <a href="/admin_register/export" class="btn btn-success"> Export Excel</a>
+            </div>
+        </div>
+
+        <!-- -------------------- Table: รายชื่อนักเรียนที่ลงทะเบียนแล้ว -------------------- -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">ชื่อนักเรียน</th>
+                    <th class="text-center">ชั้น</th>
+                    <th class="text-center">เลขที่</th>
+                    <th class="text-center">อีเมลล์</th>
+                    <th class="text-center">ชุมนุมที่ลงทะเบียน</th>
+                    <th class="text-center">ครูที่ปรึกษา</th>
+                    <th class="text-center">เงื่อนไขการรับ</th>
+                    <th class="text-center">การดำเนินการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% registrations.forEach(reg=> { %>
+                    <tr>
+                        <td class="text-center">
+                            <%= reg.name_users %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.classroom %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.number %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.email %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.club_name %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.name_teachers %>
+                        </td>
+                        <td class="text-center">
+                            <%= reg.conditions %>
+                        </td>
+                        <td class="text-center">
+                            <!-- ปุ่มแก้ไขข้อมูลนักเรียน -->
+                            <a href="/admin_register/edit-registration/<%= encodeURIComponent(reg.name_users) %>"
+                                class="btn btn-sm btn-info">แก้ไข</a>
+                            <!-- ปุ่มลบข้อมูลนักเรียน -->
+                            <button class="btn btn-sm btn-danger btn-delete-register"
+                                data-register-user="<%= reg.name_users %>">ลบ</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- -------------------- Script: ลบข้อมูลนักเรียน (เดี่ยว/ทั้งหมด) -------------------- -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // -------------------- ลบผู้ใช้เดี่ยว (register) --------------------
+            document.querySelectorAll('.btn-delete-register').forEach(button => {
+                button.addEventListener('click', () => {
+                    const userName = button.getAttribute('data-register-user');
+                    if (confirm(`คุณต้องการลบข้อมูลการลงทะเบียนชุมนุม "${userName}" หรือไม่?`)) {
+                        fetch('/admin_register/delete-user', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name_users: userName })
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(`ลบผู้ใช้ "${userName}" เรียบร้อยแล้ว`);
+                                    location.reload();
+                                } else {
+                                    alert(data.message || 'เกิดข้อผิดพลาด');
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                            });
+                    }
+                });
+            });
+
+            // -------------------- ลบทั้งหมด (register) --------------------
+            document.querySelector('.btn-deleteall-register')?.addEventListener('click', () => {
+                if (confirm('คุณต้องการลบทั้งหมดหรือไม่?')) {
+                    fetch('/admin_register/delete-all-users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('ลบทั้งหมดเรียบร้อยแล้ว');
+                                location.reload();
+                            } else {
+                                alert(data.message || 'เกิดข้อผิดพลาด');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                        });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

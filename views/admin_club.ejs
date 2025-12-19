@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <!-- -------------------- Meta & Title -------------------- -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - รายการชุมนุม</title>
+
+  <!-- -------------------- CSS & Icon -------------------- -->
+  <link rel="stylesheet" href="/style-admindetail.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="main p-3">
+    <!-- -------------------- Header -------------------- -->
+    <div class="main-header d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <!-- ปุ่มย้อนกลับไปหน้า Admin หลัก -->
+        <a href="/admin">
+          <button class="btn btn-success ms-1"><i class="bi bi-arrow-left"></i></button>
+        </a>
+      </div>
+      <h1 class="header_title fw-bold m-0">รายชื่อชุมนุม</h1>
+      <div class="main-btn d-flex gap-2 align-items-center">
+        <form method="GET" action="/admin_club" class="d-flex gap-2 justify-content-center align-items-center">
+          <input type="text" id="search-bar" name="search" class="form-control" value="<%= search || '' %>"
+            placeholder="พิมพ์ชื่อชุมนุม...">
+          <button type="submit" class="btn btn-primary">ค้นหา</button>
+        </form>
+        <a href="/add_club" class="btn btn-primary">+ เพิ่มชุมนุม</a>
+        <a href="/add_allclub" class="btn btn-warning">+ เพิ่มชุมนุมทั้งหมด</a>
+        <button class="btn btn-danger btn-deleteall">- ลบทั้งหมด</button>
+      </div>
+    </div>
+
+    <!-- -------------------- Club Table -------------------- -->
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th class="text-center">ชื่อชุมนุม</th>
+          <th class="text-center">กลุ่มสาระการเรียนรู้</th>
+          <th class="text-center">ครูผู้สอน</th>
+          <th class="text-center">รับสูงสุด</th>
+          <th class="text-center">ห้องเรียน</th>
+          <th class="text-center">เงื่อนไขการรับ</th>
+          <th class="text-center">การดำเนินการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% clubs.forEach(club=> { %>
+          <tr>
+            <td class="text-center">
+              <%= club.name %>
+            </td>
+            <td class="text-center">
+              <%= club.category %>
+            </td>
+            <td class="text-center">
+              <%= club.name_teachers %>
+            </td>
+            <td class="text-center">
+              <%= club.maximum_users %>
+            </td>
+            <td class="text-center">
+              <%= club.Room %>
+            </td>
+            <td class="text-center">
+              <%= club.conditions %>
+            </td>
+            <td class="text-center">
+              <a href="/admin_club/edit-club/<%= encodeURIComponent(club.name) %>" class="btn btn-sm btn-info">แก้ไข</a>
+              <button class="btn btn-sm btn-danger btn-delete" data-club="<%= club.name %>">ลบ</button>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- -------------------- Script: Delete Club & Delete All -------------------- -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // -------------------- ลบชุมนุมเดี่ยว --------------------
+      document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', () => {
+          const clubName = button.getAttribute('data-club');
+          if (confirm(`คุณต้องการลบชุมนุม "${clubName}" หรือไม่?`)) {
+            fetch('/admin_club/delete-club', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ club_name: clubName })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  alert(`ลบชุมนุม "${clubName}" เรียบร้อยแล้ว`);
+                  location.reload();
+                } else {
+                  alert(data.message || 'เกิดข้อผิดพลาด');
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+              });
+          }
+        });
+      });
+
+      // -------------------- ลบชุมนุมทั้งหมด --------------------
+      document.querySelector('.btn-deleteall').addEventListener('click', () => {
+        if (confirm('คุณต้องการลบชุมนุมทั้งหมดหรือไม่?')) {
+          fetch('/admin_club/delete-all-clubs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                alert('ลบชุมนุมทั้งหมดเรียบร้อยแล้ว');
+                location.reload();
+              } else {
+                alert(data.message || 'เกิดข้อผิดพลาด');
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+            });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- -------------------- Meta & Title -------------------- -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %> | Svk</title>
+
+    <!-- -------------------- Preload Critical Resources -------------------- -->
+    <link rel="preload" href="/style.css" as="style" />
+    <link rel="preload" href="/assets/swk-logo.jpg" as="image" />
+
+    <!-- -------------------- CSS & Icon -------------------- -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <!-- Font Awesome สำหรับไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- SweetAlert2 สำหรับแจ้งเตือน -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- -------------------- Header -------------------- -->
+    <header class="navbar navbar-expand-md border-bottom" role="banner">
+        <div class="container-fluid px-5">
+            <!-- Logo โรงเรียน -->
+            <a href="/user" class="navbar-brand d-flex align-items-center text-decoration-none" aria-label="Home">
+                <img src="/assets/swk-logo.jpg" alt="Svk Logo" class="img-nav" width="40" height="40" />
+            </a>
+            <!-- Navigation Menu -->
+            <nav class="navbar-nav d-none d-md-flex flex-row mx-auto" role="navigation">
+                <a href="#profile" class="nav-link px-4 link-dark">
+                    <h5 class="mb-0">Profile</h5>
+                </a>
+            </nav>
+            <!-- User Info & Logout -->
+            <div class="d-flex align-items-center">
+                <% if (user) { %>
+                    <span class="me-3 px-4 d-none d-md-inline">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <%= user.name_users %>
+                    </span>
+                    <form action="/logout" method="POST" class="d-inline">
+                        <button type="submit" class="btn-logout" id="logout-button"
+                            aria-label="Logout">
+                            <i class="fas fa-sign-out-alt me-1"></i>
+                            Logout
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- -------------------- User Profile Section -------------------- -->
+    <section id="profile-noregister" class="container my-5" aria-labelledby="profile-title">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 id="profile-title" class="text-center mb-4">ข้อมูลผู้ใช้</h2>
+                <div class="card shadow border-0">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <!-- รูปโปรไฟล์ -->
+                            <div class="col-md-3 text-center">
+                                <img src="/assets/swk-logo.jpg" alt="User Profile" class="rounded-circle img-fluid"
+                                    style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #0d6efd;"
+                                    loading="lazy" />
+                            </div>
+                            <!-- ข้อมูลผู้ใช้ -->
+                            <div class="col-md-9">
+                                <h3 class="mb-2">
+                                    <i class="fas fa-user-circle text-primary me-2"></i>
+                                    <%= user.name_users || 'ชื่อผู้ใช้' %>
+                                </h3>
+                                <p class="mb-2 text-muted">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <%= user.email %>
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-graduation-cap me-2"></i>
+                                    <% if (registeredClubs && registeredClubs.length > 0) { %>
+                                        คุณลงทะเบียนชุมนุม:
+                                        <% registeredClubs.forEach(club => { %>
+                                            <strong class="text-success">
+                                                <%= club.name %>
+                                            </strong>
+                                            <br>
+                                            <i class="bi bi-building"></i>&nbsp;&nbsp;&nbsp;&nbsp;ห้องเรียน:
+                                            <strong class="text-success">
+                                                <%= club.Room %>
+                                            </strong>
+                                            <br>
+                                            <i class="bi bi-person-bounding-box"></i>&nbsp;&nbsp;&nbsp;&nbsp;ครูผู้สอน:
+                                            <strong class="text-success">
+                                                <%= club.name_teachers %>
+                                            </strong>
+                                            <br>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <span class="text-warning">ยังไม่ได้ลงทะเบียนชุมนุม</span>
+                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -------------------- Footer -------------------- -->
+    <footer class="py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">
+                &copy; 2025 โรงเรียนสันป่าตองวิทยาคม. All rights reserved.
+            </p>
+            <p class="mb-0 text-muted">
+                Developed by Apiwat Buanaitham.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>

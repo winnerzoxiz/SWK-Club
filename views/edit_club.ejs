@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <!-- -------------------- Meta & Title -------------------- -->
+    <meta charset="UTF-8">
+    <title>แก้ไขชุมนุม</title>
+
+    <!-- -------------------- CSS & Icon -------------------- -->
+    <link rel="stylesheet" href="/style-edit.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+</head>
+
+<body>
+    <!-- -------------------- Message Alert -------------------- -->
+    <% if (message) { %>
+        <p style="color:red;">
+            <%= message %>
+        </p>
+    <% } %>
+
+    <main class="main">
+        <!-- -------------------- Header Menu -------------------- -->
+        <div class="head-menu">
+            <a href="/admin_club">
+                <button class="btn btn-success ms-1">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+            </a>
+            <h1>แก้ไขชุมนุม</h1>
+        </div>
+
+        <!-- -------------------- Edit Club Form -------------------- -->
+        <form method="POST" action="/admin_club/edit-club/<%= club.name %>">
+            <label for="name">ชื่อชุมนุม:</label>
+            <input type="text" id="name" name="name" value="<%= club.name %>" required><br>
+
+            <label for="name_teachers">ครูผู้สอน:</label>
+            <input type="text" id="name_teachers" name="name_teachers" value="<%= club.name_teachers %>" required><br>
+
+            <label for="category">กลุ่มสาระการเรียนรู้:</label>
+            <input type="text" id="category" name="category" value="<%= club.category %>" required><br>
+
+            <label for="maximum_users">จำนวนรับสูงสุด:</label>
+            <input type="number" id="maximum_users" name="maximum_users" value="<%= club.maximum_users %>" required><br>
+
+            <label for="Room">ห้อง:</label>
+            <input type="text" id="Room" name="Room" value="<%= club.Room %>" required><br>
+
+            <label for="Room">เงื่อนไขการรับ:</label>
+            <input type="text" id="conditions" name="conditions" value="<%= club.conditions %>" required><br>
+
+            <button type="submit">บันทึกการแก้ไข</button>
+        </form>
+    </main>
+</body>
+
+</html>

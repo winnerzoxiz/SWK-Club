@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <!-- -------------------- Meta & Title -------------------- -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+
+  <!-- -------------------- CSS & Icon -------------------- -->
+  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <!-- Chart.js สำหรับกราฟ -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- -------------------- Header -------------------- -->
+  <header>
+    <!-- ปุ่ม Logout -->
+    <form action="/logout" method="POST" class="d-inline">
+      <button type="submit" class="btn-logout" id="logout-button" aria-label="Logout">
+        Logout
+      </button>
+    </form>
+    <!-- Toggle ระบบเปิด/ปิด -->
+    <div class="system-toggle">
+      <h3>สถานะระบบสำหรับผู้ใช้งาน</h3>
+      <form action="/admin/toggle-system" method="POST" class="system-toggle">
+        <label class="switch">
+          <input type="checkbox" name="system_status" value="open" <%=systemStatus==='open' ? 'checked' : '' %>
+          onchange="this.form.submit()">
+          <span class="slider"></span>
+        </label>
+        <span class="status-text">
+          <%= systemStatus==='open' ? 'ระบบเปิดใช้งาน' : 'ระบบปิดอยู่' %>
+        </span>
+      </form>
+    </div>
+    <h1 class="admin-title">หน้าหลักผู้ดูแลระบบ</h1>
+  </header>
+
+  <!-- -------------------- Main Content -------------------- -->
+  <div class="container">
+    <div class="admin_container">
+      <div class="admin_chart">
+        <!-- กราฟสถิติการลงทะเบียนชุมนุม -->
+        <div class="chart-container">
+          <h2 class="chart-title">สถิติการลงทะเบียนชุมนุม</h2>
+          <canvas id="donutChart"></canvas>
+        </div>
+        <!-- เมนูการจัดการข้อมูลต่าง ๆ -->
+        <div class="admin_detail">
+          <a href="/admin_students" class="card-link" title="จัดการข้อมูลนักเรียน">
+            <div class="card">
+              <h3>ข้อมูลนักเรียน</h3>
+              <p>แก้ไข เพิ่ม หรือลบข้อมูลนักเรียน</p>
+            </div>
+          </a>
+          <a href="/admin_club" class="card-link" title="จัดการข้อมูลชุมนุม">
+            <div class="card">
+              <h3>ข้อมูลชุมนุม</h3>
+              <p>แก้ไข เพิ่ม หรือลบข้อมูลชุมนุม</p>
+            </div>
+          </a>
+          <a href="/admin_register" class="card-link" title="ดูข้อมูลผู้ลงทะเบียน">
+            <div class="card">
+              <h3>ข้อมูลผู้ลงทะเบียนแล้ว</h3>
+              <p>ตรวจสอบและจัดการข้อมูลผู้ลงทะเบียนชุมนุม</p>
+            </div>
+          </a>
+          <a href="/admin_unregister" class="card-link" title="จัดการข้อมูลผู้ที่ยังไม่ได้ลงชุมนุม">
+            <div class="card">
+              <h3>ข้อมูลผู้ที่ยังไม่ได้ลงทะเบียน</h3>
+              <p>ตรวจสอบและจัดการข้อมูลผู้ที่ยังไม่ได้ลงทะเบียนชุมนุม</p>
+            </div>
+          </a>
+          <a href="/admin_club_capacity" class="card-link" title="จัดการข้อมูลชุมนุมที่ยังว่าง">
+            <div class="card">
+              <h3>ดูข้อมูลชุมนุมที่ผู้ลงทะเบียนยังไม่เต็ม</h3>
+              <p>ตรวจสอบและจัดการข้อมูลชุมนุมที่ยังว่างอยู่</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- -------------------- Plugin & Chart Script -------------------- -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script>
+    // ข้อมูลสำหรับกราฟโดนัท
+    const registered = <%= registered %>;
+    const notRegistered = <%= notRegistered %>;
+
+    // สร้างกราฟโดนัทแสดงสถิติการลงทะเบียน
+    const ctx = document.getElementById('donutChart');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['ลงทะเบียนแล้ว', 'ยังไม่ได้ลงทะเบียน'],
+        datasets: [{
+          data: [registered, notRegistered],
+          backgroundColor: ['#36A2EB', '#FF6384'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: 'white',
+              font: { size: 20 }
+            }
+          },
+          datalabels: {
+            color: 'white',
+            font: { weight: 'bold', size: 16 },
+            formatter: (value, context) => {
+              const dataset = context.chart.data.datasets[0];
+              const total = dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1) + '%';
+              return `${value} คน (${percentage})`;
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  </script>
+</body>
+
+</html>
