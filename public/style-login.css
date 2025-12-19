@@ -1,0 +1,194 @@
+/* Clean Dark Theme CSS for Login Page */
+
+:root {
+  --bg-primary: #0f0f23;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #7d8590;
+  --border-color: #30363d;
+  --border-focus: #58a6ff;
+  --primary-color: #238636;
+  --primary-hover: #2ea043;
+  --accent-color: #58a6ff;
+  --glass-bg: rgba(22, 27, 34, 0.8);
+}
+
+/* -------------------- Reset & Base -------------------- */
+/* รีเซ็ตค่าเริ่มต้นและฟอนต์ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* -------------------- Body Layout -------------------- */
+/* พื้นหลังและจัดวางให้อยู่กลางจอ */
+body {
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary)), url('/images/background.jpg') no-repeat center center;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* -------------------- Main Form Container -------------------- */
+/* กล่องฟอร์ม login */
+.form-signin {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  margin: auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: #9B177E;
+  animation: slideUp 0.8s ease-out;
+}
+
+/* -------------------- Animation -------------------- */
+/* Animation สำหรับกล่องฟอร์ม */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------- Logo Styling -------------------- */
+/* โลโก้บนฟอร์ม */
+.custom-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.custom-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(88, 166, 255, 0.3);
+}
+
+/* -------------------- Heading Styles -------------------- */
+/* หัวข้อ login */
+.h3 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  text-align: center;
+}
+
+/* -------------------- Show Password Icon -------------------- */
+.show-password-icon {
+  position: absolute;
+  right: 0;
+  top: 20%;
+  padding-right: 20px;
+}
+
+/* -------------------- Form Styles -------------------- */
+/* ฟอร์ม input และ label */
+.form-floating {
+  margin-bottom: 1.5rem;
+}
+
+.form-floating > .form-control {
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 1rem 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-floating > .form-control:focus {
+  background-color: #FFEAD8;
+  border-color: var(--border-focus);
+  color: #000;
+  box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.form-floating > label {
+  color: #000;
+  font-weight: 500;
+  padding: 1rem 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: var(--accent-color);
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  font-weight: 600;
+}
+
+/* -------------------- Button Styles -------------------- */
+/* ปุ่ม login */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.875rem 2rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #2ea043);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(35, 134, 54, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+/* -------------------- Copyright Text -------------------- */
+/* ข้อความลิขสิทธิ์ด้านล่าง */
+.text-muted {
+  color: #ffff !important;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  font-weight: 400;
+}
+
+/* -------------------- Responsive Design -------------------- */
+/* ปรับ layout สำหรับหน้าจอเล็ก */
+@media (max-width: 480px) {
+  .form-signin {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: none;
+  }
+  .custom-logo {
+    width: 64px;
+    height: 64px;
+  }
+  .h3 {
+    font-size: 1.5rem;
+  }
+}

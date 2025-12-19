@@ -1,0 +1,529 @@
+/* ==================== Global Styles ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-bg: #0f0f23;
+  --secondary-bg: #1a1a2e;
+  --card-bg: #16213e;
+  --accent-primary: #00d4ff;
+  --accent-secondary: #7b2cbf;
+  --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8d1;
+  --text-muted: #8b8ba7;
+  --success: #00ff87;
+  --danger: #ff0051;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --glow-primary: 0 0 20px rgba(0, 212, 255, 0.3);
+  --glow-secondary: 0 0 20px rgba(123, 44, 191, 0.3);
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--primary-bg);
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.08) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text-primary);
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* ==================== Header Styles ==================== */
+header {
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-title {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.5rem;
+  text-align: center;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: var(--glow-primary);
+}
+
+/* ==================== Logout Button ==================== */
+.btn-logout {
+  background: linear-gradient(135deg, #ff0051 0%, #ff6b9d 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(255, 0, 81, 0.3);
+  align-self: flex-end;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-logout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-logout:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 0, 81, 0.4);
+}
+
+.btn-logout:hover::before {
+  left: 100%;
+}
+
+.btn-logout:active {
+  transform: translateY(-1px);
+}
+
+/* ==================== System Toggle ==================== */
+.system-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm);
+}
+
+.system-toggle h3 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.system-toggle .status-text {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 38px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #3a3a52 0%, #2a2a3e 100%);
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 38px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  left: 4px;
+  bottom: 4px;
+  background: linear-gradient(135deg, #f0f0f0 0%, #d0d0d0 100%);
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+input:checked + .slider {
+  background: linear-gradient(135deg, #00ff87 0%, #00d4aa 100%);
+  box-shadow: var(--glow-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(32px);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+}
+
+/* ==================== Container ==================== */
+.container {
+  max-width: 1600px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.admin_container {
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ==================== Chart Section ==================== */
+.admin_chart {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+.chart-container {
+  background: linear-gradient(135deg, rgba(22, 33, 62, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  padding: 2.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow: var(--shadow-md), var(--glow-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+}
+
+.chart-title {
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+#donutChart {
+  max-width: 550px;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.2));
+}
+
+/* ==================== Admin Details Cards ==================== */
+.admin_detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.75rem;
+}
+
+.card-link {
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card {
+  background: linear-gradient(135deg, rgba(22, 33, 62, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card h3 {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.card p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* ==================== Scrollbar Styling ==================== */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 6px;
+  border: 2px solid var(--primary-bg);
+}
+
+/* ==================== Responsive Design ==================== */
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+  header {
+    padding: 1.25rem 1.5rem;
+    position: sticky;
+  }
+
+  .admin-title {
+    font-size: 1.8rem;
+  }
+
+  .system-toggle {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .system-toggle h3 {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .btn-logout {
+    align-self: center;
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .container {
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+  }
+
+  .admin_container {
+    padding: 1.75rem;
+    border-radius: 20px;
+  }
+
+  .chart-container {
+    padding: 1.75rem;
+  }
+
+  .chart-title {
+    font-size: 1.6rem;
+  }
+
+  .admin_detail {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .card {
+    padding: 1.75rem;
+    min-height: 150px;
+  }
+
+  .card h3 {
+    font-size: 1.3rem;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  header {
+    padding: 1rem;
+  }
+
+  .admin-title {
+    font-size: 1.5rem;
+  }
+
+  .system-toggle h3 {
+    font-size: 1rem;
+  }
+
+  .system-toggle .status-text {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .switch {
+    width: 60px;
+    height: 32px;
+  }
+
+  .slider:before {
+    height: 26px;
+    width: 26px;
+    left: 3px;
+    bottom: 3px;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(28px);
+  }
+
+  .btn-logout {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .admin_container {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .chart-container {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .chart-title {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin_detail {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1.5rem;
+    min-height: 140px;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+/* Large Desktop (1200px and above) */
+@media (min-width: 1200px) {
+  .admin_chart {
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+  }
+
+  .chart-container {
+    position: sticky;
+    top: 140px;
+  }
+
+  .admin_detail {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1800px;
+  }
+
+  .admin_detail {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card {
+    min-height: 180px;
+  }
+}
+
+
+/* ==================== Utility Classes ==================== */
+.d-inline {
+  display: inline;
+}
+
+/* ==================== Print Styles ==================== */
+@media print {
+  body {
+    background: white;
+  }
+
+  .btn-logout,
+  .system-toggle {
+    display: none;
+  }
+
+  .admin_container {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .card {
+    break-inside: avoid;
+  }
+}
